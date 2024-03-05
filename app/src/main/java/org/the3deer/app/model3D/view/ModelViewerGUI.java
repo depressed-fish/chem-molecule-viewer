@@ -3,7 +3,9 @@ package org.the3deer.app.model3D.view;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import org.the3deer.android_3d_model_engine.collision.CollisionEvent;
 import org.the3deer.android_3d_model_engine.drawer.RendererFactory;
+import org.the3deer.android_3d_model_engine.event.PointEvent;
 import org.the3deer.android_3d_model_engine.event.SelectedObjectEvent;
 import org.the3deer.android_3d_model_engine.gui.CheckList;
 import org.the3deer.android_3d_model_engine.gui.GUI;
@@ -209,15 +211,17 @@ final class ModelViewerGUI extends GUI {
                     } else {
                         info.append(selected.getId().substring(selected.getId().lastIndexOf('/')+1));
                     }
+                    /*
                     info.append('\n');
                     info.append("size: ");
                     info.append(String.format(Locale.getDefault(), "%.2f",selected.getDimensions().getLargest()));
                     info.append('\n');
-                    info.append("scale: ");
+                    info.append("hi");
                     info.append(String.format(Locale.getDefault(), "%.2f",selected.getScaleX()));
                     //final DecimalFormat df = new DecimalFormat("0.##");
                     //info.append(df.format(selected.getScaleX()));
                     info.append("x");
+                    */
                 }
                 Log.v("ModelViewerGUI","Selected object info: "+info);
                 this.info.update(info.toString().toLowerCase());
@@ -277,6 +281,24 @@ final class ModelViewerGUI extends GUI {
             float[] newPosition = ((MoveEvent) event).getWidget().getLocation().clone();
             newPosition[1]+=dy;
             ((MoveEvent) event).getWidget().setLocation(newPosition);
+        } else if (event instanceof CollisionEvent) {
+            CollisionEvent collisionEvent = (CollisionEvent) event;
+
+            Log.i("ModelViewerGUI","Collision detected: "+collisionEvent.getObject().getId());
+        } else if (event instanceof PointEvent) {
+            Log.i("ModelViewerGUI","Point detected: "+ ((PointEvent) event).getX()+","+ ((PointEvent) event).getY());
+            final StringBuilder info = new StringBuilder();
+            // TODO: make this put up the relevant info and check for the molecule
+            if (((PointEvent) event).getX() > 500 && ((PointEvent) event).getY() > 50){
+                info.append("Collision detected");
+            } else {
+                info.append("No collision");
+            }
+            info.append("x: ");
+            info.append(String.format(Locale.getDefault(), "%.2f", ((PointEvent) event).getX()));
+            info.append(" y: ");
+            info.append(String.format(Locale.getDefault(), "%.2f", ((PointEvent) event).getY()));
+            this.info.update(info.toString().toLowerCase());
         }
         return true;
     }

@@ -29,6 +29,7 @@ import org.the3deer.android_3d_model_engine.collision.CollisionController;
 import org.the3deer.android_3d_model_engine.collision.CollisionEvent;
 import org.the3deer.android_3d_model_engine.controller.TouchController;
 import org.the3deer.android_3d_model_engine.controller.TouchEvent;
+import org.the3deer.android_3d_model_engine.event.PointEvent;
 import org.the3deer.android_3d_model_engine.event.SelectedObjectEvent;
 import org.the3deer.android_3d_model_engine.model.Projection;
 import org.the3deer.android_3d_model_engine.services.LoaderTask;
@@ -469,7 +470,7 @@ public class ModelActivity extends Activity implements EventListener {
             TouchEvent touchEvent = (TouchEvent) event;
             if (touchEvent.getAction() == TouchEvent.Action.CLICK){
                 if (!collisionController.onEvent(event)){
-                    scene.onEvent(event);
+                    gui.onEvent(event);
                 }
             } else {
                 if (scene.getSelectedObject() != null) {
@@ -497,6 +498,8 @@ public class ModelActivity extends Activity implements EventListener {
             } else if (viewEvent.getCode() == ViewEvent.Code.PROJECTION_CHANGED){
                 cameraController.onEvent(event);
             }
+        } else if (event instanceof PointEvent){
+            gui.onEvent(event);
         }
         return true;
     }
